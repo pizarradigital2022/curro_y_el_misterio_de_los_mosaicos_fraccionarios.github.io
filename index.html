@@ -114,6 +114,11 @@
             align-items: center;
             vertical-align: middle;
             margin: 0 10px;
+            position: relative;
+            background-image: url('./resources/mosaico.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .fraccion-input-container input {
@@ -123,6 +128,9 @@
             margin: 0 !important;
             font-size: 1.2rem;
             font-weight: bold;
+            opacity: 0.75;
+            position: relative;
+            z-index: 2;
         }
 
         .linea-fraccion {
@@ -130,6 +138,8 @@
             height: 3px;
             background-color: #2b1d1d;
             margin: 5px 0;
+            position: relative;
+            z-index: 2;
         }
 
         .bloque-operacion {
@@ -215,7 +225,7 @@
     <div class="image-placeholder"><img src="./resources/curro_sevilla.jpeg" alt="Curro y el profesor investigando un mosaico en Sevilla"></div>
     <h2>Un extraño crimen contra el patrimonio de Sevilla...</h2>
     <p>Sevilla está conmocionada. Al más puro estilo de la novela <em>"El asesinato de la regañá"</em>, un misterioso bromista arlequín está alterando los monumentos más icónicos de la ciudad. No deja notas tradicionales; sustituye los azulejos por **mosaicos con operaciones de fracciones** incompletas.</p>
-    <p><b>Curro</b> y vuestro <b>profesor de matemáticas</b> necesitan vuestra ayuda. En cada monumento deberéis resolver la operación planteada en el enunciado y colocar la **fracción resultado** en el mosaico.</p>
+    <p><b>Curro</b> y vuestro <b>profesor de matemáticas</b> necesitan vuestra ayuda. En cada monumento deberéis resolver la operation planteada en el enunciado y colocar la **fracción resultado** en el mosaico.</p>
     <p>Al final, el gran candado requerirá que introduzcas el numerador y el denominador correspondientes a la **suma total de todas las fracciones obtenidas una vez estén totalmente simplificadas**.</p>
     
     <h3>Elige la dificultad:</h3>
@@ -238,7 +248,7 @@
     <p><em>Introduce la fracción resultado obtenida:</em></p>
     
     <div class="bloque-operacion">
-        <div class="fraccion-input-container" style="background: #fff4d4; padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
+        <div class="fraccion-input-container" style="padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
             <input type="number" id="p1-nr" placeholder="Num">
             <div class="linea-fraccion"></div>
             <input type="number" id="p1-dr" placeholder="Den">
@@ -263,7 +273,7 @@
     <p><em>Introduce la fracción resultado obtenida:</em></p>
 
     <div class="bloque-operacion">
-        <div class="fraccion-input-container" style="background: #fff4d4; padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
+        <div class="fraccion-input-container" style="padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
             <input type="number" id="p2-nr" placeholder="Num">
             <div class="linea-fraccion"></div>
             <input type="number" id="p2-dr" placeholder="Den">
@@ -288,7 +298,7 @@
     <p><em>Introduce la fracción resultado obtenida:</em></p>
 
     <div class="bloque-operacion">
-        <div class="fraccion-input-container" style="background: #fff4d4; padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
+        <div class="fraccion-input-container" style="padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
             <input type="number" id="p3-nr" placeholder="Num">
             <div class="linea-fraccion"></div>
             <input type="number" id="p3-dr" placeholder="Den">
@@ -313,7 +323,7 @@
     <p><em>Introduce la fracción resultado obtenida:</em></p>
 
     <div class="bloque-operacion">
-        <div class="fraccion-input-container" style="background: #fff4d4; padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
+        <div class="fraccion-input-container" style="padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
             <input type="number" id="p4-nr" placeholder="Num">
             <div class="linea-fraccion"></div>
             <input type="number" id="p4-dr" placeholder="Den">
@@ -338,7 +348,7 @@
     <p><em>Introduce la fracción resultado obtenida:</em></p>
 
     <div class="bloque-operacion">
-        <div class="fraccion-input-container" style="background: #fff4d4; padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
+        <div class="fraccion-input-container" style="padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
             <input type="number" id="p5-nr" placeholder="Num">
             <div class="linea-fraccion"></div>
             <input type="number" id="p5-dr" placeholder="Den">
@@ -363,7 +373,7 @@
     <p><em>Introduce la fracción resultado obtenida:</em></p>
 
     <div class="bloque-operacion">
-        <div class="fraccion-input-container" style="background: #fff4d4; padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
+        <div class="fraccion-input-container" style="padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
             <input type="number" id="p6-nr" placeholder="Num">
             <div class="linea-fraccion"></div>
             <input type="number" id="p6-dr" placeholder="Den">
@@ -388,7 +398,7 @@
     <p><em>Introduce la fracción resultado obtenida:</em></p>
 
     <div class="bloque-operacion">
-        <div class="fraccion-input-container" style="background: #fff4d4; padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
+        <div class="fraccion-input-container" style="padding: 10px; border-radius: 4px; border: 2px solid #e5b22d;">
             <input type="number" id="p7-nr" placeholder="Num">
             <div class="linea-fraccion"></div>
             <input type="number" id="p7-dr" placeholder="Den">
@@ -457,7 +467,7 @@
     </div>
 
     <div class="bloque-operacion">
-        <div class="fraccion-input-container" style="background: #f7eedb; padding: 15px; border-radius: 6px; border: 2px solid #901a1e;">
+        <div class="fraccion-input-container" style="padding: 15px; border-radius: 6px; border: 2px solid #901a1e;">
             <input type="number" id="final-code-nr" placeholder="Num Final">
             <div class="linea-fraccion" style="background-color: #901a1e; height: 4px;"></div>
             <input type="number" id="final-code-dr" placeholder="Den Final">
