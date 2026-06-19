@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curro, el profesor de Matemáticas y el misterio de los mosaicos fraccionarios</title>
+    <title>Curro y el misterio de los mosaicos fraccionarios</title>
     <link rel="icon" type="image/x-icon" href="./resources/favicon.ico">
     <style>
         body {
@@ -193,11 +193,11 @@
             box-sizing: border-box;
         }
 
-        input[type="number"] {
+        input[type="number"], input[type="text"] {
             border: 2px solid #c5bba8;
             border-radius: 4px;
         }
-        input[type="number"]:focus {
+        input[type="number"]:focus, input[type="text"]:focus {
             outline: none;
             border-color: #901a1e;
             background-color: #fffdf9;
@@ -207,7 +207,7 @@
 <body>
 
 <header>
-    <h1>Curro, el profesor de Matemáticas y el misterio de los mosaicos fraccionarios</h1>
+    <h1>Curro y el Misterio de los Mosaicos Fraccionarios</h1>
     <div id="timer-box" style="display:none;">⏳ Tiempo de investigación: <span id="timer">--:--</span></div>
 </header>
 
@@ -220,7 +220,7 @@
     
     <h3>Elige la dificultad:</h3>
     <label><input type="radio" name="game-time" value="45" checked> Modo Inspector (45 minutos)</label><br>
-    <label><input type="radio" name="game-time" value="60"> Modo Ayudante (60 minutes)</label><br><br>
+    <label><input type="radio" name="game-time" value="60"> Modo Ayudante (60 minutos)</label><br><br>
     
     <div style="text-align: center;">
         <button onclick="startGame()">Comenzar la investigación</button>
@@ -486,7 +486,7 @@
 <div id="screen-fail" class="container">
     <h2 style="color: #c62828;">❌ INVESTIGACIÓN BLOQUEADA</h2>
     <div class="image-placeholder"><img src="./resources/curro_frac_fracaso.png" alt="Curro y el profesor tristes"></div>
-    <p id="fail-message">El código es incorrecto o el tiempo ha expirado. El criminal ha huido y los mosaicos siguen dañados.</p>
+    <p id="fail-message">El código es incorrecto o el tiempo ha expirado. El criminal ha huido y los mosaicos siguen daños.</p>
     <p>¡No os rindáis! Revisad bien que vuestros resultados sean los correctos. Recuerda que para el código final debes **simplificar al máximo cada fracción obtenida y sumarlas todas buscando el m.c.m.**.</p>
     <div style="text-align: center; margin-top: 20px;">
         <button onclick="restartGame()">🔄 Volver al Inicio (Reintentar)</button>
@@ -498,8 +498,8 @@
     <button onclick="toggleProfesor()">🔑 Archivo del Profesor</button>
     <div id="profesor-panel" class="profesor-panel">
         <h3>Panel Técnico del Docente</h3>
-        <p>Introduce la contraseña para ver el solucionario exacto:</p>
-        <input type="text" id="prof-pass" placeholder="Contraseña...">
+        <p>Introduce la contraseña ("PROFE" o "Sevilla") para ver el solucionario exacto:</p>
+        <input type="text" id="prof-pass" placeholder="Contraseña..." onkeydown="handleProfesorKey(event)">
         <button onclick="unlockProfesor()">Ver Solucionario</button>
         
         <div id="prof-content" style="display:none; text-align: left; margin-top:15px;">
@@ -532,7 +532,6 @@
     let countdown;
     let timeLeft; 
     
-    // Fracción del candado final calculada de forma exacta e irreducible
     const correctFinalNr = 2525;
     const correctFinalDr = 84;
 
@@ -630,8 +629,14 @@
         panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
     }
 
+    function handleProfesorKey(event) {
+        if (event.key === "Enter" || event.keyCode === 13) {
+            unlockProfesor();
+        }
+    }
+
     function unlockProfesor() {
-        const pass = document.getElementById('prof-pass').value.toLowerCase();
+        const pass = document.getElementById('prof-pass').value;
         if (pass === "PROFE" || pass === "Sevilla") {
             document.getElementById('prof-content').style.display = 'block';
         } else {
