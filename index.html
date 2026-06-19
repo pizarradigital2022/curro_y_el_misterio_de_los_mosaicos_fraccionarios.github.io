@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breakout Matemático: El Misterio de los Mosaicos de Sevilla con Curro</title>
+    <link rel="icon" type="image/x-icon" href="./resources/favicon.ico">
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #fcf8f2;
+            color: #2b1d1d;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #901a1e; 
+            color: #f7eedb;
+            width: 100%;
+            text-align: center;
+            padding: 15px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-bottom: 5px solid #e5b22d; 
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+            padding: 0 10px;
+        }
+
+        #timer-box {
+            margin-top: 5px;
+            font-size: 1.1rem;
+        }
+
+        #timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: #e5b22d;
+            color: #2b1d1d;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .container {
+            max-width: 850px;
+            width: 95%;
+            background: #ffffff;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border: 2px solid #901a1e;
+            display: none; 
+            box-sizing: border-box;
+        }
+
+        .container.active {
+            display: block;
+        }
+
+        h2 {
+            color: #901a1e;
+            border-bottom: 2px solid #e5b22d;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            background-color: #f1e6cf;
+            border: 2px dashed #901a1e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            padding: 10px 0;
+        }
+
+        .image-placeholder img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        button {
+            background-color: #901a1e;
+            color: #f7eedb;
+            border: 2px solid #e5b22d;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #e5b22d;
+            color: #901a1e;
+        }
+
+        /* DISEÑO DE FRACCIONES PARA RELLENAR */
+        .fraccion-input-container {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 10px;
+        }
+
+        .fraccion-input-container input {
+            width: 60px !important;
+            text-align: center;
+            padding: 6px !important;
+            margin: 0 !important;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .linea-fraccion {
+            width: 65px;
+            height: 3px;
+            background-color: #2b1d1d;
+            margin: 5px 0;
+        }
+
+        .operador-mat {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: inline-block;
+            align-self: center;
+            margin: 0 5px;
+            line-height: 1;
+        }
+
+        .bloque-operacion {
+            background: #fdfaf4;
+            border: 2px solid #e5b22d;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-nav {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .resumen-box {
+            background-color: #faf6ee; 
+            border: 2px solid #e5b22d; 
+            padding: 15px; 
+            margin: 20px auto; 
+            border-radius: 5px; 
+            text-align: left;
+        }
+
+        /* Estilos tabla resumen candado */
+        .tabla-resumen {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .tabla-resumen th, .tabla-resumen td {
+            border: 1px solid #e5b22d;
+            padding: 8px;
+            text-align: center;
+        }
+        .tabla-resumen th {
+            background-color: #901a1e;
+            color: white;
+        }
+
+        .profesor-panel {
+            background-color: #f0eae1;
+            border: 2px solid #901a1e;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none;
+            text-align: left;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+
+        input[type="number"] {
+            border: 2px solid #c5bba8;
+            border-radius: 4px;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #901a1e;
+            background-color: #fffdf9;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Curro y el Misterio de los Mosaicos Fraccionarios</h1>
+    <div id="timer-box" style="display:none;">⏳ Tiempo de investigación: <span id="timer">--:--</span></div>
+</header>
+
+<div id="screen-intro" class="container active">
+    <div class="image-placeholder"><img src="./resources/curro_sevilla.png" alt="Curro en Sevilla"></div>
+    <h2>Un extraño crimen contra el patrimonio de Sevilla...</h2>
+    <p>Sevilla está conmocionada. Al más puro estilo de la novela <em>"El asesinato de la regañá"</em>, un misterioso bromista arlequín está alterando los monumentos más icónicos de la ciudad. No deja notas tradicionales; sustituye los azulejos por **mosaicos con operaciones de fracciones** incompletas.</p>
+    <p>**Curro** y vuestro **profesor de matemáticas** necesitan vuestra ayuda. En cada monumento deberéis rellenar los huecos del mosaico expresando las fracciones del enunciado simplificadas y, finalmente, calcular los huecos de la fracción resultante.</p>
+    <p>Al final, en el gran candado, se os pedirá una contraseña numérica basada en los numeradores y denominadores descubiertos. ¡A por ellos!</p>
+    
+    <h3>Elige la dificultad:</h3>
+    <label><input type="radio" name="game-time" value="45" checked> Modo Inspector (45 minutos)</label><br>
+    <label><input type="radio" name="game-time" value="60"> Modo Ayudante (60 minutos)</label><br><br>
+    
+    <div style="text-align: center;">
+        <button onclick="startGame()">Comenzar la investigación</button>
+    </div>
+</div>
+
+<div id="screen-p1" class="container">
+    <h2>Mosaico 1: En lo alto de la Giralda</h2>
+    <p>Curro sube a la Giralda. El azulejo vandalizado contiene este problema de **Suma con igual denominador**:</p>
+    <p style="background: #f7eedb; padding: 10px; border-left: 4px solid #901a1e;">
+        "Para restaurar el campanario se usan dos planchas. La primera cubre <strong>3/7</strong> de la pared y la segunda cubre <strong>11/7</strong>. ¿Qué fracción total de la pared se ha cubierto?"
+    </p>
+    
+    <p><em>Completa el mosaico matemático del monumento (simplifica si es posible):</em></p>
+    
+    <div class="bloque-operacion">
+        <div class="fraccion-input-container">
+            <input type="number" id="p1-n1" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p1-d1" placeholder="Den">
+        </div>
+        <div class="operador-mat">+</div>
+        <div class="fraccion-input-container">
+            <input type="number" id="p1-n2" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p1-d2" placeholder="Den">
+        </div>
+        <div class="operador-mat">=</div>
+        <div class="fraccion-input-container" style="background: #fff4d4; padding: 5px; border-radius: 4px;">
+            <input type="number" id="p1-nr" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p1-dr" placeholder="Den">
+        </div>
+    </div>
+
+    <div class="btn-nav">
+        <button style="visibility: hidden;">Atrás</button>
+        <button onclick="nextScreen('p1', 'p2')">Ir a la Torre del Oro ➡️</button>
+    </div>
+</div>
+
+<div id="screen-p2" class="container">
+    <h2>Mosaico 2: El Secreto de la Torre del Oro</h2>
+    <p>El profesor examina la base de la Torre del Oro. Aquí el problema es una **Resta con igual denominador**:</p>
+    <p style="background: #f7eedb; padding: 10px; border-left: 4px solid #901a1e;">
+        "En un barril defensivo había <strong>19/5</strong> de litros de aceite. Los guardias gastaron <strong>4/5</strong> de litro. ¿Qué fracción de litros queda?"
+    </p>
+
+    <div class="bloque-operacion">
+        <div class="fraccion-input-container">
+            <input type="number" id="p2-n1" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p2-d1" placeholder="Den">
+        </div>
+        <div class="operador-mat">-</div>
+        <div class="fraccion-input-container">
+            <input type="number" id="p2-n2" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p2-d2" placeholder="Den">
+        </div>
+        <div class="operador-mat">=</div>
+        <div class="fraccion-input-container" style="background: #fff4d4; padding: 5px; border-radius: 4px;">
+            <input type="number" id="p2-nr" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p2-dr" placeholder="Den">
+        </div>
+    </div>
+
+    <div class="btn-nav">
+        <button onclick="nextScreen('p2', 'p1')">⬅️ Atrás</button>
+        <button onclick="nextScreen('p2', 'p3')">Ir al Puente de Triana ➡️</button>
+    </div>
+</div>
+
+<div id="screen-p3" class="container">
+    <h2>Mosaico 3: Los Arcos del Puente de Triana</h2>
+    <p>Bajo los arcos de hierro aparece una **Suma con distinto denominador**:</p>
+    <p style="background: #f7eedb; padding: 10px; border-left: 4px solid #901a1e;">
+        "Un herrero une dos vigas para asegurar el puente. La primera mide <strong>7/2</strong> de metro y la segunda mide <strong>5/4</strong> de metro. ¿Cuál es la longitud total combinada?"
+    </p>
+
+    <div class="bloque-operacion">
+        <div class="fraccion-input-container">
+            <input type="number" id="p3-n1" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p3-d1" placeholder="Den">
+        </div>
+        <div class="operador-mat">+</div>
+        <div class="fraccion-input-container">
+            <input type="number" id="p3-n2" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p3-d2" placeholder="Den">
+        </div>
+        <div class="operador-mat">=</div>
+        <div class="fraccion-input-container" style="background: #fff4d4; padding: 5px; border-radius: 4px;">
+            <input type="number" id="p3-nr" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p3-dr" placeholder="Den">
+        </div>
+    </div>
+
+    <div class="btn-nav">
+        <button onclick="nextScreen('p3', 'p2')">⬅️ Atrás</button>
+        <button onclick="nextScreen('p3', 'p4')">Ir al Parque de María Luisa ➡️</button>
+    </div>
+</div>
+
+<div id="screen-p4" class="container">
+    <h2>Mosaico 4: Las Palomas de la Plaza de América</h2>
+    <p>Junto a las palomas, descubrís una **Resta con diferente denominador**:</p>
+    <p style="background: #f7eedb; padding: 10px; border-left: 4px solid #901a1e;">
+        "En los estanques había <strong>5/3</strong> de sacos de pienso. Las aves se comieron <strong>1/2</strong> saco. ¿Qué fracción de saco queda?"
+    </p>
+
+    <div class="bloque-operacion">
+        <div class="fraccion-input-container">
+            <input type="number" id="p4-n1" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p4-d1" placeholder="Den">
+        </div>
+        <div class="operador-mat">-</div>
+        <div class="fraccion-input-container">
+            <input type="number" id="p4-n2" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p4-d2" placeholder="Den">
+        </div>
+        <div class="operador-mat">=</div>
+        <div class="fraccion-input-container" style="background: #fff4d4; padding: 5px; border-radius: 4px;">
+            <input type="number" id="p4-nr" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p4-dr" placeholder="Den">
+        </div>
+    </div>
+
+    <div class="btn-nav">
+        <button onclick="nextScreen('p4', 'p3')">⬅️ Atrás</button>
+        <button onclick="nextScreen('p4', 'p5')">Ir a la Plaza de España ➡️</button>
+    </div>
+</div>
+
+<div id="screen-p5" class="container">
+    <h2>Mosaico 5: El Banco de Sevilla en Plaza de España</h2>
+    <p>Escondido en los bancos cerámicos, halláis una **Multiplicación de fracciones** (recuerda que un número entero tiene denominador 1):</p>
+    <p style="background: #f7eedb; padding: 10px; border-left: 4px solid #901a1e;">
+        "Un artesano tarda <strong>4/5</strong> de hora en pintar un azulejo. Si le encargan una colección de <strong>10</strong> azulejos iguales, ¿cuántas horas (expresado en fracción) necesitará?"
+    </p>
+
+    <div class="bloque-operacion">
+        <div class="fraccion-input-container">
+            <input type="number" id="p5-n1" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p5-d1" placeholder="Den">
+        </div>
+        <div class="operador-mat">×</div>
+        <div class="fraccion-input-container">
+            <input type="number" id="p5-n2" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p5-d2" placeholder="Den">
+        </div>
+        <div class="operador-mat">=</div>
+        <div class="fraccion-input-container" style="background: #fff4d4; padding: 5px; border-radius: 4px;">
+            <input type="number" id="p5-nr" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p5-dr" placeholder="Den">
+        </div>
+    </div>
+
+    <div class="btn-nav">
+        <button onclick="nextScreen('p5', 'p4')">⬅️ Atrás</button>
+        <button onclick="nextScreen('p5', 'p6')">Ir a las Setas de Sevilla ➡️</button>
+    </div>
+</div>
+
+<div id="screen-p6" class="container">
+    <h2>Mosaico 6: En el mirador de Metropol Parasol</h2>
+    <p>Arriba en las Setas, el peligroso Arlequín os reta con una **División de fracciones**:</p>
+    <p style="background: #f7eedb; padding: 10px; border-left: 4px solid #901a1e;">
+        "Se quieren repartir <strong>12/3</strong> de kilo de dulces en paquetes pequeños que contienen exactamente <strong>2/3</strong> de kilo cada uno. ¿Qué fracción de paquetes resultará?"
+    </p>
+
+    <div class="bloque-operacion">
+        <div class="fraccion-input-container">
+            <input type="number" id="p6-n1" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p6-d1" placeholder="Den">
+        </div>
+        <div class="operador-mat">÷</div>
+        <div class="fraccion-input-container">
+            <input type="number" id="p6-n2" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p6-d2" placeholder="Den">
+        </div>
+        <div class="operador-mat">=</div>
+        <div class="fraccion-input-container" style="background: #fff4d4; padding: 5px; border-radius: 4px;">
+            <input type="number" id="p6-nr" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p6-dr" placeholder="Den">
+        </div>
+    </div>
+
+    <div class="btn-nav">
+        <button onclick="nextScreen('p6', 'p5')">⬅️ Atrás</button>
+        <button onclick="nextScreen('p6', 'p7')">Ir al Real Alcázar ➡️</button>
+    </div>
+</div>
+
+<div id="screen-p7" class="container">
+    <h2>Mosaico 7: El Enigma Final del Real Alcázar</h2>
+    <p>¡Último esfuerzo! El laberinto electrónico se abrirá si completáis esta **Operación Combinada** de nivel 1º de ESO:</p>
+    <p style="background: #f7eedb; padding: 10px; border-left: 4px solid #901a1e;">
+        "Calcula paso a paso el resultado de la siguiente operación combinada de fracciones: <br><strong>( 1/2 + 5/2 ) × 3/1 - 4/1</strong>"
+    </p>
+
+    <div class="bloque-operacion">
+        <span class="operador-mat">(</span>
+        <div class="fraccion-input-container">
+            <input type="number" id="p7-n1" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p7-d1" placeholder="Den">
+        </div>
+        <div class="operador-mat">+</div>
+        <div class="fraccion-input-container">
+            <input type="number" id="p7-n2" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p7-d2" placeholder="Den">
+        </div>
+        <span class="operador-mat">)</span>
+        <div class="operador-mat">×</div>
+        <div class="fraccion-input-container">
+            <input type="number" id="p7-n3" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p7-d3" placeholder="Den">
+        </div>
+        <div class="operador-mat">-</div>
+        <div class="fraccion-input-container">
+            <input type="number" id="p7-n4" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p7-d4" placeholder="Den">
+        </div>
+        <div class="operador-mat">=</div>
+        <div class="fraccion-input-container" style="background: #fff4d4; padding: 5px; border-radius: 4px;">
+            <input type="number" id="p7-nr" placeholder="Num">
+            <div class="linea-fraccion"></div>
+            <input type="number" id="p7-dr" placeholder="Den">
+        </div>
+    </div>
+
+    <div class="btn-nav">
+        <button onclick="nextScreen('p7', 'p6')">⬅️ Atrás</button>
+        <button onclick="nextScreen('p7', 'lock')">Ir al Candado del Caso 🔓</button>
+    </div>
+</div>
+
+<div id="screen-lock" class="container">
+    <h2>🔓 El Candado Digital del Arlequín</h2>
+    <p>Para desactivar la bomba de humo del criminal, debéis introducir la contraseña secreta. Esta contraseña se calcula sumando **absolutamente todos los números resultantes (Numeradores y Denominadores)** que introdujisteis en los cuadros amarillos de respuesta final.</p>
+    
+    <div class="resumen-box">
+        <h3 style="margin-top: 0; color: #901a1e; border-bottom: 1px dashed #e5b22d; padding-bottom: 5px;">HUECOS DE LAS FRACCIONES RESULTANTES DE LAS OPERACIONES:</h3>
+        <table class="tabla-resumen">
+            <thead>
+                <tr>
+                    <th>Monumento / Operación</th>
+                    <th>Numerador Resultante</th>
+                    <th>Denominador Resultante</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1. La Giralda (Suma)</td>
+                    <td><span id="res-p1-nr"></span></td>
+                    <td><span id="res-p1-dr"></span></td>
+                </tr>
+                <tr>
+                    <td>2. Torre del Oro (Resta)</td>
+                    <td><span id="res-p2-nr"></span></td>
+                    <td><span id="res-p2-dr"></span></td>
+                </tr>
+                <tr>
+                    <td>3. Puente de Triana (Suma m.c.m)</td>
+                    <td><span id="res-p3-nr"></span></td>
+                    <td><span id="res-p3-dr"></span></td>
+                </tr>
+                <tr>
+                    <td>4. Parque María Luisa (Resta m.c.m)</td>
+                    <td><span id="res-p4-nr"></span></td>
+                    <td><span id="res-p4-dr"></span></td>
+                </tr>
+                <tr>
+                    <td>5. Plaza de España (Multiplicación)</td>
+                    <td><span id="res-p5-nr"></span></td>
+                    <td><span id="res-p5-dr"></span></td>
+                </tr>
+                <tr>
+                    <td>6. Las Setas (División)</td>
+                    <td><span id="res-p6-nr"></span></td>
+                    <td><span id="res-p6-dr"></span></td>
+                </tr>
+                <tr>
+                    <td>7. Real Alcázar (Combinada)</td>
+                    <td><span id="res-p7-nr"></span></td>
+                    <td><span id="res-p7-dr"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="text-align: center;">
+        <p><strong>Suma de todos los Numeradores finales + todos los Denominadores finales:</strong></p>
+        <input type="number" id="final-code" placeholder="Código numérico total"><br><br>
+        <button onclick="checkLock()">🔓 Intentar abrir el candado</button>
+    </div>
+    <div class="btn-nav">
+        <button onclick="nextScreen('lock', 'p7')">⬅️ Revisar Operaciones</button>
+    </div>
+</div>
+
+<div id="screen-success" class="container">
+    <h2 style="color: #2e7d32;">¡CASO CERRADO! 🎉 Sevilla está a salvo</h2>
+    <p>¡El candado digital cede! Vuestro dominio absoluto de los numeradores, denominadores, mínimos comunes múltiplos y la jerarquía de operaciones de 1º de la ESO ha neutralizado por completo al criminal.</p>
+    <p>Curro y vuestro profesor os felicitan: ¡Sois los mejores inspectores matemáticos de la ciudad!</p>
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="restartGame()">🔄 Volver al inicio</button>
+    </div>
+</div>
+
+<div id="screen-fail" class="container">
+    <h2 style="color: #c62828;">❌ INVESTIGACIÓN BLOQUEADA</h2>
+    <p id="fail-message">El código es incorrecto o el tiempo ha expirado. El criminal ha huido y los mosaicos siguen dañados.</p>
+    <p>¡No os rindáis! Revisad bien que todas las fracciones del enunciado estén correctamente colocadas y que los cálculos de los numeradores y denominadores resultantes estén perfectamente simplificados.</p>
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="restartGame()">🔄 Volver al Inicio (Reintentar)</button>
+    </div>
+</div>
+
+<footer>
+    <hr>
+    <button onclick="toggleProfesor()">🔑 Archivo del Profesor</button>
+    <div id="profesor-panel" class="profesor-panel">
+        <h3>Panel Técnico del Docente</h3>
+        <p>Introduce la contraseña ("profe") para ver el solucionario exacto:</p>
+        <input type="text" id="prof-pass" placeholder="Contraseña...">
+        <button onclick="unlockProfesor()">Ver Solucionario</button>
+        
+        <div id="prof-content" style="display:none; text-align: left; margin-top:15px;">
+            <h4>Soluciones esperadas por huecos:</h4>
+            <ul>
+                <li><strong>P1 (Giralda):</strong> 3/7 + 11/7 = <strong style="color:blue">14/7</strong> (Suma directa)</li>
+                <li><strong>P2 (Torre Oro):</strong> 19/5 - 4/5 = <strong style="color:blue">15/5</strong> (Resta directa)</li>
+                <li><strong>P3 (Pte Triana):</strong> 7/2 + 5/4 = <strong style="color:blue">19/4</strong> (m.c.m = 4)</li>
+                <li><strong>P4 (Mª Luisa):</strong> 5/3 - 1/2 = <strong style="color:blue">7/6</strong> (m.c.m = 6)</li>
+                <li><strong>P5 (Plaza España):</strong> 4/5 × 10/1 = <strong style="color:blue">40/5</strong> (en línea)</li>
+                <li><strong>P6 (Setas):</strong> 12/3 ÷ 2/3 = <strong style="color:blue">36/6</strong> (o simplificada 6/1 o 6 si el alumno razona, la lógica por defecto de cruz da 36/6) -> *Nota pedagógica: El sistema valida la operación directa sin reducir:* 36/6.</li>
+                <li><strong>P7 (Alcázar):</strong> (1/2 + 5/2) × 3/1 - 4/1 = 6/2 × 3/1 - 4/1 = 18/2 - 4/1 = 18/2 - 8/2 = <strong style="color:blue">10/2</strong></li>
+            </ul>
+            <p><strong>Cálculo del código del candado (Suma de todos los NR + DR amarillos):</strong><br>
+            (14+7) + (15+5) + (19+4) + (7+6) + (40+5) + (36+6) + (10+2) = 21 + 20 + 23 + 13 + 45 + 42 + 12 = <strong style="color:red; font-size:1.3rem;">176</strong></p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    let countdown;
+    let timeLeft; 
+    // Código correcto: Suma de numeradores y denominadores resultantes directos del cálculo estándar de 1º ESO
+    // (14+7)+(15+5)+(19+4)+(7+6)+(40+5)+(36+6)+(10+2) = 176
+    const correctCode = 176; 
+
+    function nextScreen(currentId, nextId) {
+        document.getElementById('screen-' + currentId).classList.remove('active');
+        document.getElementById('screen-' + nextId).classList.add('active');
+        
+        if (nextId === 'lock') {
+            renderResumenRespuestas();
+        }
+        window.scrollTo(0,0);
+    }
+
+    function renderResumenRespuestas() {
+        for (let i = 1; i <= 7; i++) {
+            const nrValue = document.getElementById('p' + i + '-nr').value.trim();
+            const drValue = document.getElementById('p' + i + '-dr').value.trim();
+            
+            const slotNr = document.getElementById('res-p' + i + '-nr');
+            const slotDr = document.getElementById('res-p' + i + '-dr');
+            
+            slotNr.innerHTML = nrValue === "" ? '<span style="color:red;font-style:italic;">?</span>' : '<strong style="color:green;">' + nrValue + '</strong>';
+            slotDr.innerHTML = drValue === "" ? '<span style="color:red;font-style:italic;">?</span>' : '<strong style="color:green;">' + drValue + '</strong>';
+        }
+    }
+
+    function startGame() {
+        const selectedTime = document.querySelector('input[name="game-time"]:checked').value;
+        timeLeft = selectedTime * 60; 
+        document.getElementById('timer-box').style.display = 'block';
+        startTimer();
+        nextScreen('intro', 'p1');
+    }
+
+    function startTimer() {
+        clearInterval(countdown);
+        countdown = setInterval(() => {
+            if(timeLeft <= 0) {
+                clearInterval(countdown);
+                triggerFail("¡El tiempo se ha agotado y el Arlequín ha escapado!");
+            } else {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                document.getElementById('timer').innerText = 
+                    (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+            }
+        }, 1000);
+    }
+
+    function checkLock() {
+        const inputCode = parseInt(document.getElementById('final-code').value);
+        if (inputCode === correctCode) {
+            clearInterval(countdown); 
+            hideAllContainers();
+            document.getElementById('screen-success').classList.add('active');
+            document.getElementById('timer-box').style.display = 'none';
+        } else {
+            triggerFail("Código del candado incorrecto. La trampa se ha activado.");
+        }
+    }
+
+    function triggerFail(message) {
+        clearInterval(countdown);
+        hideAllContainers();
+        document.getElementById('fail-message').innerText = message;
+        document.getElementById('screen-fail').classList.add('active');
+        document.getElementById('timer-box').style.display = 'none';
+    }
+
+    function restartGame() {
+        // Limpiar todas las cajas de texto de los 7 problemas
+        for(let i = 1; i <= 7; i++) {
+            if(document.getElementById('p'+i+'-n1')) document.getElementById('p'+i+'-n1').value = '';
+            if(document.getElementById('p'+i+'-d1')) document.getElementById('p'+i+'-d1').value = '';
+            if(document.getElementById('p'+i+'-n2')) document.getElementById('p'+i+'-n2').value = '';
+            if(document.getElementById('p'+i+'-d2')) document.getElementById('p'+i+'-d2').value = '';
+            if(document.getElementById('p'+i+'-n3')) document.getElementById('p'+i+'-n3').value = '';
+            if(document.getElementById('p'+i+'-d3')) document.getElementById('p'+i+'-d3').value = '';
+            if(document.getElementById('p'+i+'-n4')) document.getElementById('p'+i+'-n4').value = '';
+            if(document.getElementById('p'+i+'-d4')) document.getElementById('p'+i+'-d4').value = '';
+            document.getElementById('p'+i+'-nr').value = '';
+            document.getElementById('p'+i+'-dr').value = '';
+        }
+        document.getElementById('final-code').value = '';
+        document.getElementById('prof-pass').value = '';
+        document.getElementById('prof-content').style.display = 'none';
+        document.getElementById('profesor-panel').style.display = 'none';
+        
+        hideAllContainers();
+        document.getElementById('screen-intro').classList.add('active');
+    }
+
+    function hideAllContainers() {
+        const containers = document.querySelectorAll('.container');
+        containers.forEach(c => c.classList.remove('active'));
+    }
+
+    function toggleProfesor() {
+        const panel = document.getElementById('profesor-panel');
+        panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function unlockProfesor() {
+        const pass = document.getElementById('prof-pass').value.toLowerCase();
+        if (pass === "profe" || pass === "sevilla") {
+            document.getElementById('prof-content').style.display = 'block';
+        } else {
+            alert("Contraseña del profesor incorrecta.");
+        }
+    }
+</script>
+
+</body>
+</html>
